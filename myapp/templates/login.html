@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>预测系统用户登录</title>
+    <style>
+    body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-image: url("{% static 'myapp/zhucebeijing.jpg' %}"); /* 替换为您的图片路径 */
+            background-size: cover; /* 覆盖整个视口 */
+            background-position: center center; /* 图片居中显示 */
+            background-attachment: fixed; /* 背景图片固定，不随滚动条滚动 */
+        }
+    .background-title-container {
+            text-align: center;
+            margin-bottom: 20px; /* 或者根据需要调整间距 */
+        }
+
+    .background-title {
+            font-size: 4em; /* 增加标题字体大小 */
+            font-family: 'Dancing Script', cursive; /* 这是一个艺术风格的字体示例 */
+            color: #ffffff; /* 如果需要，这里是字体颜色 */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 添加文本阴影以增强艺术效果 */
+        }
+
+    .login-container {
+        /* 登录表单的样式 */
+        width: 300px;
+        margin: 0 auto; /* 水平居中 */
+        padding: 50px;
+        background: #ffffffcc; /* 半透明白色背景 */
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        /* 其他样式 */
+    }
+    .login-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+    .login-form .form-field {
+            margin-bottom: 10px;
+        }
+
+    .login-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+    .login-form input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+    .login-form .error {
+            color: red;
+        }
+
+    .register-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+    .register-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-title-container">
+            <h1 class="background-title">锈蚀RC圆形墩柱破坏模式预测系统</h1>
+        </div>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>用户登录</h1>
+        </div>
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <div class="form-field">
+                <label for="username">用户名:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            <div class="form-field">
+                <label for="password">密码:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div class="form-actions">
+                <input type="submit" value="登录">
+                {% if error %}
+                    <p class="error">{{ error }}</p>
+                {% endif %}
+            </div>
+            <p class="register-link">没有账号？<a href="{% url 'register' %}">注册</a></p>
+        </form>
+    </div>
+</body>
+</html>

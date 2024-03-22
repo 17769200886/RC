@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>预测概率直方图</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url("{% static 'myapp/zhucebeijing.jpg' %}"); /* 替换为您的图片路径 */
+            background-size: cover; /* 覆盖整个视口 */
+            background-position: center center; /* 图片居中显示 */
+            background-attachment: fixed; /* 背景图片固定，不随滚动条滚动 */
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 50%;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* 设置导航栏的样式 */
+        .navbar {
+            position: fixed; /* 固定定位 */
+            top: 0; /* 距顶部0像素 */
+            left: 0; /* 距左边0像素 */
+            width: 100%; /* 宽度扩展到整个视口宽度 */
+            background-color: #333; /* 导航栏背景色 */
+            display: flex;
+            justify-content: space-between; /* 两端对齐 */
+            padding: 10px 20px; /* 导航栏内边距 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* 添加一些阴影效果 */
+            z-index: 1000; /* 确保导航栏在最上层 */
+        }
+        /* 导航栏左侧样式 */
+        .navbar-left {
+            display: flex;
+        }
+        /* 导航栏链接样式 */
+        .navbar a {
+            font-family: 'Dancing Script', cursive;
+            color: white; /* 文字颜色 */
+            text-decoration: none; /* 移除下划线 */
+            font-size: 16px; /* 字体大小 */
+            padding: 8px 15px; /* 内边距 */
+            border-radius: 4px; /* 边框圆角 */
+            transition: background-color 0.3s; /* 过渡效果 */
+        }
+
+        /* 仅针对具有onclick事件的<a>标签应用鼠标指针样式 */
+        /* 鼠标悬浮在链接上的样式 */
+        .navbar a:hover {
+            background-color: #ddd; /* 背景色 */
+            color: black; /* 文字颜色 */
+        }
+        /* 当前活动链接的样式 */
+        .navbar a.active {
+            background-color: #4CAF50; /* 活动链接背景色 */
+            color: white;
+        }
+        h1 {
+            color: #333333;
+            font-size: 30px;
+            margin-bottom: 20px;
+            font-weight: bold; /* 设置字体加粗 */
+            color: #000000; /* 设置字体颜色为黑色 */
+        }
+
+        /* 图像样式 */
+        img {
+            max-width: 100%; /* 确保图像不会超过其容器的宽度 */
+            height: auto; /* 图像高度自动调整 */
+            border-radius: 8px; /* 圆角边框 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 添加阴影 */
+        }
+
+        /* 模态窗口样式 */
+        .modal {
+            display: none; /* 默认不显示 */
+            position: fixed; /* 固定定位 */
+            z-index: 1001; /* 确保在页面其他内容之上 */
+            left: 0;
+            top: 0;
+            width: 100%; /* 模态窗口宽度 */
+            height: 100%; /* 模态窗口高度 */
+            overflow: auto; /* 如果内容太多则添加滚动条 */
+            background-color: rgb(0, 0, 0); /* 背景色 */
+            background-color: rgba(0, 0, 0, 0.9); /* 背景色透明度 */
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%; /* 模态内容宽度 */
+            max-width: 700px; /* 最大宽度限制 */
+            position: absolute; /* 绝对定位 */
+            top: 50%; /* 距离顶部50% */
+            left: 50%; /* 距离左侧50% */
+            transform: translate(-50%, -50%); /* 偏移以确保准确居中 */
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            color: #fff;
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #999;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* 为了确保内容不会被固定的导航栏遮挡 */
+        body {
+            padding-top: 60px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="#predict-system" class="active">锈蚀RC圆形墩柱破坏模式预测系统</a>
+            <a href="#predict-system" >预测概率直方图</a>
+        </div>
+        <a href="javascript:void(0);" onclick="goBack()">返回上一页</a>
+        </div>
+    <div class="container">
+        <h1>预测概率直方图</h1>
+        <img src="{% static 'myapp/prediction.png' %}" alt="预测概率直方图" onclick="enlargeImage(this)">
+        <div id="myModal" class="modal">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img class="modal-content" id="img01">
+            <div id="caption"></div>
+    </div>
+</div>
+
+<script>
+    // JavaScript 函数用于处理图片点击放大和关闭模态框
+    function enlargeImage(img) {
+        var modal = document.getElementById("myModal");
+        var modalImg = document.getElementById("img01");
+        var captionText = document.getElementById("caption");
+        modal.style.display = "block";
+        modalImg.src = img.src;
+        captionText.innerHTML = img.alt;
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+</body>
+</html>

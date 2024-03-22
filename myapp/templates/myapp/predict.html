@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>锈蚀RC圆形墩柱破坏模式预测结果</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url("{% static 'myapp/zhucebeijing.jpg' %}"); /* 替换为您的图片路径 */
+            background-size: cover; /* 覆盖整个视口 */
+            background-position: center center; /* 图片居中显示 */
+            background-attachment: fixed; /* 背景图片固定，不随滚动条滚动 */
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 900px;
+            width: 400%;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* 设置导航栏的样式 */
+        .navbar {
+            position: fixed; /* 固定定位 */
+            top: 0; /* 距顶部0像素 */
+            left: 0; /* 距左边0像素 */
+            width: 100%; /* 宽度扩展到整个视口宽度 */
+            background-color: #333; /* 导航栏背景色 */
+            display: flex;
+            justify-content: space-between; /* 两端对齐 */
+            padding: 10px 20px; /* 导航栏内边距 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* 添加一些阴影效果 */
+            z-index: 1000; /* 确保导航栏在最上层 */
+        }
+        /* 导航栏左侧样式 */
+        .navbar-left {
+            display: flex;
+        }
+        /* 导航栏链接样式 */
+        .navbar a {
+            font-family: 'Dancing Script', cursive;
+            color: white; /* 文字颜色 */
+            text-decoration: none; /* 移除下划线 */
+            font-size: 16px; /* 字体大小 */
+            padding: 8px 15px; /* 内边距 */
+            border-radius: 4px; /* 边框圆角 */
+            transition: background-color 0.3s; /* 过渡效果 */
+        }
+        /* 鼠标悬浮在链接上的样式 */
+        .navbar a:hover {
+            background-color: #ddd; /* 背景色 */
+            color: black; /* 文字颜色 */
+        }
+        /* 当前活动链接的样式 */
+        .navbar a.active {
+            background-color: #4CAF50; /* 活动链接背景色 */
+            color: white;
+        }
+
+        .table-center {
+            display: block; /* 设置为块级元素 */
+            margin-left: auto; /* 左侧自动外边距 */
+            margin-right: auto; /* 右侧自动外边距 */
+            width: 50%; /* 表格宽度 */
+        }
+        table {
+            border-collapse: collapse; /* 边框合并为单一边框 */
+            margin: 20px 0; /* 表格的上下外边距 */
+            width: 100%; /* 表格宽度占满父容器 */
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #367c39; /* 加粗边框并设置颜色 */
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+        tr:nth-child(even) {
+            background-color: #f0f0f0;
+        }
+        tr:hover {
+            background-color: #4CAF50; /* 悬停时背景颜色更加突出 */
+            color: white; /* 悬停时字体颜色更改为白色 */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        h1 {
+            color: #333333;
+            font-size: 30px;
+            margin-bottom: 20px;
+            font-weight: bold; /* 设置字体加粗 */
+            color: #000000; /* 设置字体颜色为黑色 */
+        }
+        p {
+            /* 现有的样式 */
+            text-align: center;
+            color: white;
+            font-size: 35px;
+            margin: 20px auto;
+            font-weight: bold;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,2);
+            width: max-content;
+            transition: all 0.3s ease; /* 添加过渡效果 */
+        }
+        /* 鼠标悬浮时的样式 */
+        p:hover {
+            background-color: #367c39; /* 改变背景色 */
+            color: #ffdd57; /* 改变字体颜色 */
+            cursor: pointer; /* 鼠标变为手指形状 */
+            box-shadow: 0 6px 12px rgba(0,0,0,3); /* 加大阴影 */
+        }
+        /* 为了确保内容不会被固定的导航栏遮挡 */
+        body {
+            padding-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="#predict-system" class="active">锈蚀RC圆形墩柱破坏模式预测系统</a>
+        </div>
+        <!-- 导航栏链接 -->
+        <a href="{% url 'probability_result' %}?nsv={{ nsv }}&al={{ al }}&av={{ av }}&n={{ n }}&λ={{ λ }}&sh0={{ sh0 }}">查看预测概率直方图</a>
+        <a href="{% url 'shap_force_plots_result' %}?nsv={{ nsv }}&al={{ al }}&av={{ av }}&n={{ n }}&λ={{ λ }}&sh0={{ sh0 }}">查看SHAP值分析图</a>
+        <a href="{% url 'shap_values_result' %}?nsv={{ nsv }}&al={{ al }}&av={{ av }}&n={{ n }}&λ={{ λ }}&sh0={{ sh0 }}">查看特征参数SHAP值分布图</a>
+        <a href="{% url 'shap_values_data' %}?nsv={{ nsv }}&al={{ al }}&av={{ av }}&n={{ n }}&λ={{ λ }}&sh0={{ sh0 }}">查看特征参数SHAP值数据表格</a>
+        <a href="{% url 'index' %}">返回上一页</a>
+    </div>
+    <div class="container">
+        <h1>根据您所输入的锈蚀RC圆形墩柱特征参数，如表格所示：</h1>
+        <div class="table-center">
+        <table>
+            <tr>
+                <th>特征参数</th>
+                <th>参数值</th>
+            </tr>
+            <tr>
+                <td>锈蚀率 (nsv)</td>
+                <td>{{ nsv }}</td>
+            </tr>
+            <tr>
+                <td>纵筋参数 (al)</td>
+                <td>{{ al }}</td>
+            </tr>
+            <tr>
+                <td>箍筋参数 (av)</td>
+                <td>{{ av }}</td>
+            </tr>
+            <tr>
+                <td>轴压比 (n)</td>
+                <td>{{ n }}</td>
+            </tr>
+            <tr>
+                <td>剪跨比 (λ)</td>
+                <td>{{ λ }}</td>
+            </tr>
+            <tr>
+                <td>箍筋间距与截面有效高度比值 (s/h0)</td>
+                <td>{{ sh0 }}</td>
+            </tr>
+        </table>
+        </div>
+        <p> <span style="color: black;">得到预测破坏模式为：</span><span style="color: red;">{{ prediction }}</span></p>
+    </div>
+</body>
+</html>

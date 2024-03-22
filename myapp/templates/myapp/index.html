@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>锈蚀RC圆形墩柱破坏模式预测模型</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url("{% static 'myapp/zhucebeijing.jpg' %}"); /* 替换为您的图片路径 */
+            background-size: cover; /* 覆盖整个视口 */
+            background-position: center center; /* 图片居中显示 */
+            background-attachment: fixed; /* 背景图片固定，不随滚动条滚动 */
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 50%;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* 设置导航栏的样式 */
+        .navbar {
+            position: fixed; /* 固定定位 */
+            top: 0; /* 距顶部0像素 */
+            left: 0; /* 距左边0像素 */
+            width: 100%; /* 宽度扩展到整个视口宽度 */
+            background-color: #333; /* 导航栏背景色 */
+            display: flex;
+            justify-content: space-between; /* 两端对齐 */
+            padding: 10px 20px; /* 导航栏内边距 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* 添加一些阴影效果 */
+            z-index: 1000; /* 确保导航栏在最上层 */
+        }
+        /* 导航栏左侧样式 */
+        .navbar-left {
+            display: flex;
+        }
+        /* 导航栏链接样式 */
+        .navbar a {
+            font-family: 'Dancing Script', cursive;
+            color: white; /* 文字颜色 */
+            text-decoration: none; /* 移除下划线 */
+            font-size: 16px; /* 字体大小 */
+            padding: 8px 15px; /* 内边距 */
+            border-radius: 4px; /* 边框圆角 */
+            transition: background-color 0.3s; /* 过渡效果 */
+        }
+        /* 鼠标悬浮在链接上的样式 */
+        .navbar a:hover {
+            background-color: #ddd; /* 背景色 */
+            color: black; /* 文字颜色 */
+        }
+        /* 当前活动链接的样式 */
+        .navbar a.active {
+            background-color: #4CAF50; /* 活动链接背景色 */
+            color: white;
+        }
+        /* 为了确保内容不会被固定的导航栏遮挡 */
+        body {
+            padding-top: 60px;
+        }
+        .container h1 {
+            text-align: center; /* 标题居中 */
+            margin-bottom: 20px; /* 标题下方的间距 */
+        }
+
+        form {
+            display: flex; /* 使用Flex布局 */
+            flex-direction: column; /* 垂直排列 */
+        }
+
+        label {
+            margin-bottom: 5px; /* 标签下方的间距 */
+        }
+
+        input[type="number"], input[type="submit"] {
+            padding: 8px; /* 输入框和提交按钮的内边距 */
+            margin-bottom: 8px; /* 元素之间的间距 */
+            border: 1px solid #ddd; /* 边框样式 */
+            border-radius: 4px; /* 边框圆角 */
+        }
+
+        input[type="submit"] {
+            background-color: #28a745; /* 按钮背景颜色 */
+            color: white; /* 按钮文字颜色 */
+            cursor: pointer; /* 鼠标悬停时的光标样式 */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838; /* 按钮悬停时的背景颜色 */
+        }
+
+        /* 显示验证错误时的样式 */
+        input:invalid {
+            border-color: green; /* 无效输入的边框颜色 */
+        }
+
+        /* 自定义的错误提示样式 */
+        input:invalid + .tooltip {
+            display: block;
+        }
+
+        .tooltip {
+            display: none;
+            background-color: #ffdddd;
+            color: red;
+            padding: 5px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+
+    </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>锈蚀RC圆形墩柱破坏模式预测结果</title>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="#predict-system" class="active">锈蚀RC圆形墩柱破坏模式预测系统</a>
+            <a href="#predict-system" >您好！欢迎进入锈蚀RC圆形墩柱破坏模式预测系统，感谢您的使用！</a>
+        </div>
+
+        <a href="{% url 'logout' %}">退出登录</a>
+    </div>
+    <div class="container">
+        <h1>请输入锈蚀RC圆形墩柱特征参数数据！</h1>
+        <form id="myForm" method="post" action="{% url 'predict' %}">
+            {% csrf_token %}
+        <label for="nsv">锈蚀率（nsv）:</label>
+        <input type="number" id="nsv" name="nsv" min="0.02" max="0.34" step="0.01" required
+               title="值必须在0.02到0.34之间"><br>
+        <label for="al">纵筋参数（al）:</label>
+        <input type="number" id="al" name="al" min="0.11" max="0.97" step="0.01" required
+               title="值必须在0.11到0.97之间"><br>
+        <label for="av">箍筋参数（av）:</label>
+        <input type="number" id="av" name="av" min="0.15" max="2.09" step="0.01" required
+               title="值必须在0.15到2.09之间"><br>
+        <label for="n">轴压比（n）:</label>
+        <input type="number" id="n" name="n" min="0.06" max="0.9" step="0.01" required
+               title="值必须在0.06到0.9之间"><br>
+        <label for="λ">剪跨比（λ）:</label>
+        <input type="number" id="λ" name="λ" min="1.5" max="7.5" step="0.1" required
+               title="值必须在1.5到7.5之间"><br>
+        <label for="sh0">箍筋间距与截面有效高度比值（s/h0）:</label>
+        <input type="number" id="sh0" name="sh0" min="0.14" max="0.63" step="0.01" required
+               title="值必须在0.14到0.63之间"><br>
+        <input type="submit" value="预测">
+    </form>
+    </div>
+
+</body>
+</html>
+
+
+

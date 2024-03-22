@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>各对应破坏模式SHAP值分析图</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url("{% static 'myapp/zhucebeijing.jpg' %}");
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 50%;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .navbar-left {
+            display: flex;
+        }
+        .navbar a {
+            font-family: 'Dancing Script', cursive;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .navbar a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        h1 {
+            color: #333333;
+            font-size: 30px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #000000;
+        }
+        h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            padding: 5px;
+            border-bottom: 2px solid #4CAF50;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            cursor: pointer; /* 添加鼠标指针样式 */
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            color: #fff;
+            font-size: 35px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #999;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        body {
+            padding-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="#predict-system" class="active">锈蚀RC圆形墩柱破坏模式预测系统</a>
+            <a href="#predict-system">各对应破坏模式SHAP值分析图</a>
+        </div>
+        <a href="javascript:void(0);" onclick="goBack()">返回上一页</a>
+    </div>
+    <div class="container">
+                <h1>各对应破坏模式SHAP值分析图</h1>
+        {% for i in samples %}
+            {% for class_name in class_names %}
+                <h2>对应破坏模式为{{ class_name }}时：</h2>
+                <img src="{% static 'myapp/' %}shap_force_plot_sample_{{ i }}_class_{{ class_name }}.png" alt="SHAP Force Plot" onclick="enlargeImage(this)">
+            {% endfor %}
+        {% endfor %}
+        <div id="myModal" class="modal">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img class="modal-content" id="img01">
+            <div id="caption"></div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript 函数用于处理图片点击放大和关闭模态框
+        function enlargeImage(img) {
+            var modal = document.getElementById("myModal");
+            var modalImg = document.getElementById("img01");
+            var captionText = document.getElementById("caption");
+            modal.style.display = "block";
+            modalImg.src = img.src;
+            captionText.innerHTML = img.alt;
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

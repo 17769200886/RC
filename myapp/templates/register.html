@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>预测系统用户注册</title>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+        background-image: url("{% static 'myapp/zhucebeijing.jpg' %}");
+        background-size: cover;
+        background-position: center center;
+        background-attachment: fixed;
+    }
+    .background-title-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .background-title {
+        font-size: 4em;
+        font-family: 'Dancing Script', cursive;
+        color: #ffffff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .error-message {
+        color: red; /* 错误消息的文字颜色 */
+        background-color: #ffe6e6; /* 背景色 */
+        border: 1px solid #ffcccc; /* 边框 */
+        padding: 10px; /* 内部空间 */
+        margin: 10px 0; /* 外部空间 */
+        border-radius: 5px; /* 边框圆角 */
+        text-align: center; /* 文本居中 */
+    }
+    .register-container {
+        width: 300px;
+        margin: 0 auto;
+        padding: 50px;
+        background: #ffffffcc;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .register-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .register-form .form-field {
+        margin-bottom: 10px;
+    }
+    .register-form label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    .register-form input[type="text"],
+    .register-form input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .register-form input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+    }
+    </style>
+</head>
+<body>
+    <div class="background-title-container">
+        <h1 class="background-title">锈蚀RC圆形墩柱破坏模式预测系统</h1>
+    </div>
+    {% if error %}
+        <div class="error-message">{{ error }}</div>
+    {% endif %}
+    <div class="register-container">
+        <div class="register-header">
+            <h1>用户注册</h1>
+        </div>
+        <form method="post" class="register-form">
+            {% csrf_token %}
+            <div class="form-field">
+                <label for="username">用户名:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            <div class="form-field">
+                <label for="password">密码:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div class="form-actions">
+                <input type="submit" value="注册">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
